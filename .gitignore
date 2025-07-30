@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+metrics/
+data/
+job_exception.json
+*.log
+flink-1.18.1/
+flink-*.tgz
+flink-conf.yaml
+.vscode/
+.idea/

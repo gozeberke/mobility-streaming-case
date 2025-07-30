@@ -1,0 +1,46 @@
+import pandas as pd
+import time
+import json
+import numpy as np
+from kafka import KafkaProducer
+
+# Parquet dosyasını oku
+df = pd.read_parquet('../data/trips.parquet')
+df['start_time'] = pd.to_datetime(df['start_time'])
+df = df.sort_values('start_time')
+
+# Tüm veri türlerini JSON'a uygun hale getiren serializer
+def safe_json_serializer(obj):
+    if isinstance(obj, (pd.Timestamp, pd.NaT)):
+        return obj.isoformat() if not pd.isnull(obj) else None
+    elif isinstance(obj, (np.integer, np.int64)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, np.float64)):
+        return float(obj)
+    elif isinstance(obj, (np.ndarray, list)):
+        return list(obj)
+    return str(obj)
+
+# Kafka producer
+producer = KafkaProducer(
+    bootstrap_servers='localhost:9092',  # Eğer WSL dışı bir Python çalıştırıcıdan geliyorsa
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+
+interval = pd.Timedelta(minutes=5)
+current_time = df['start_time'].min()
+end_time = df['start_time'].max()
+
+while current_time < end_time:
+    batch = df[(df['start_time'] >= current_time) & (df['start_time'] < current_time + interval)]
+    print(f"Sending batch for window: {current_time} - {current_time + interval}, count: {len(batch)}")
+
+    for _, row in batch.iterrows():
+        producer.send('trip_topic', row.to_dict())
+
+    producer.flush()
+    time.sleep(1)  # Gerçek zamanlı simülasyon için beklet
+    current_time += interval
+print("Simülasyon tamamlandı.")
+
