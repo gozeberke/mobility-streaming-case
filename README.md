@@ -2,7 +2,10 @@
 
 Bu proje, gerçek zamanlı bir mobilite (ride-hailing) platformunun veri akışını, işlenmesini ve metrik üretilmesini simüle eden uçtan uca bir mimariyi içerir.  
 Tüm bileşenler **Docker Compose** ile containerize edilmiştir.
+!!!! Projeyi çeken herkesin Git LFS kurulu olması lazım:
 
+sudo apt install git-lfs
+git lfs install
 ---
 
 ## 🏗 Mimari
