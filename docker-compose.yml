@@ -174,6 +174,12 @@ services:
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
+  redis:
+    image: redis:7.0
+    ports:
+      - "6379:6379"
+    restart: always
+
   api:
     build: ./api
     ports:
@@ -183,9 +189,11 @@ services:
       MINIO_BUCKET: metrics
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       - minio
+      - redis
 
 volumes:
   minio_data:
-

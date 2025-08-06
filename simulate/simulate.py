@@ -36,7 +36,7 @@ def main():
             producer.send('trip_topic', record)
 
         producer.flush()
-        time.sleep(1)
+        time.sleep(0.1)
         current_time += interval
 
     print("Simülasyon tamamlandı.")

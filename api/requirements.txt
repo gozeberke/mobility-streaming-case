@@ -2,4 +2,4 @@ fastapi
 uvicorn
 pandas
 boto3
-
+redis

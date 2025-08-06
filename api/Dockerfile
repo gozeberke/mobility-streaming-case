@@ -4,10 +4,14 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-# pip'ye daha uzun timeout + proxy bypass
-RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org
+# Daha uzun timeout + trusted host ayarları
+RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt \
+    --trusted-host pypi.org \
+    --trusted-host pypi.python.org \
+    --trusted-host=files.pythonhosted.org
 
-COPY main.py .
+# Tüm .py dosyalarını ve diğer dosyaları kopyala
+COPY . .
 
 VOLUME ["/data"]
 
